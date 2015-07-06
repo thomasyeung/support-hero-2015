@@ -20,6 +20,8 @@ public class DefaultSeed implements Seed {
 
     public void loadInitalData() {
 
+        Logger.info("loading");
+
         Connection conn = getConnection();
 
         try {
