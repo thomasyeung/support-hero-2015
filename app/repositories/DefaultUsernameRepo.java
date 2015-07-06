@@ -32,7 +32,7 @@ public class DefaultUsernameRepo implements UsernameRepo {
             JPA.em().flush();
         } catch (Throwable e) {
             Logger.warn(username.id + " " + username.name + ":" + e.getMessage());
-            Logger.warn(e.getStackTrace().toString());
+            e.printStackTrace();
             return false;
         }
 
