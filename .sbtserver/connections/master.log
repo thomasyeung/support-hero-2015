@@ -1,0 +1,13 @@
+New log file opened at Sun Jul 05 12:27:53 PDT 2015 by 15969@MacBook-Air.att.net
+Taking next connection to: 65323
+New client attempting to connect on port: 65324-65323
+  Address = /192.168.1.73:65323
+This client on port 65324 has uuid 8cbbb9cc-378a-4d11-9003-05859042a742 configName play-fork-run humanReadableName Play Fork Run protocolVersion 1 featureTags Vector()
+Connected Clients: play-fork-run-8cbbb9cc-378a-4d11-9003-05859042a742
+Taking next connection to: 65323
+Checking to see if clients are empty...
+No non-daemon clients connected after 3 min. Shutting down.
+Server socket thread exiting.
+0 clients open, will close them...
+All client sockets have been closed.
+Closing the 15969@MacBook-Air.att.net logs at Sun Jul 05 12:30:56 PDT 2015, goodbye.

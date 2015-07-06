@@ -1,0 +1,40 @@
+@(message: String)
+
+@main("Welcome to Play") {
+
+<form method="POST" action="@routes.Application.assignShiftByName()">
+    <input type="text" name="date"/>
+    <input type="text" name="name"/>
+    <button>assign</button>
+</form>
+
+<div>
+    <input id="inputDate" type="text" name="date"/>
+    <input id="inputName" type="text" name="name"/>
+    <button onclick="unassignShift()">unassign</button>
+</div>
+
+
+<div>
+    <input id="inputStartDate" type="text" name="date"/>
+    <input id="inputEndDate" type="text" name="date"/>
+    <input id="inputName2" type="text" name="name"/>
+    <button onclick="getUserSchedule()">find a user's schedule</button>
+</div>
+
+<div>
+    <input id="inputDate1" type="text" name="date"/>
+    <input id="inputDate2" type="text" name="date"/>
+    <button onclick="swapShifts()">swap</button>
+</div>
+
+
+<div>
+    <button onclick="getCurrentMonthSchedule()">full schedule of current month</button>
+</div>
+
+
+<div id="output">
+
+</div>
+}
