@@ -31,7 +31,8 @@ public class DefaultUsernameRepo implements UsernameRepo {
             JPA.em().persist(username);
             JPA.em().flush();
         } catch (Throwable e) {
-            Logger.warn(e.getMessage());
+            Logger.warn(username.id + " " + username.name + ":" + e.getMessage());
+            Logger.warn(e.getStackTrace().toString());
             return false;
         }
 
