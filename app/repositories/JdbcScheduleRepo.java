@@ -87,7 +87,7 @@ public class JdbcScheduleRepo implements ScheduleRepo {
 
     @Override
     public List<Shift> getShiftsByUser(Username username, Date start, Date end) {
-        String condition = "where d >= '" + start.toString() + "\' and d <= " + end.toString()
+        String condition = "where d >= \'" + start.toString() + "\' and d <= \'" + end.toString() + "\'"
                 + " and userid = \'" + username.id + "\'";
         String select1 = "(select * from schedule " + condition + ")";
         String sql = "select * from " + select1 + " s left join username u on s.userid = u.id";
