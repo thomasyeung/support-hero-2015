@@ -1,4 +1,5 @@
 import play.Logger;
+import play.db.DB;
 import play.db.jpa.JPA;
 import play.libs.F;
 import repositories.DefaultUsernameRepo;
@@ -32,7 +33,6 @@ public class DefaultSeed implements Seed {
 
             if (!rs.next()) {
                 st.executeUpdate("create table username (id int primary key, name varchar(255))");
-
                 seedUsernames();
             }
 
@@ -51,14 +51,28 @@ public class DefaultSeed implements Seed {
                 "Jay", "Boris", "Eadon", "Franky", "Luis", "James"};
 
 
+        Connection connection = DB.getConnection();
+        try {
+            connection.setAutoCommit(false);
+            Statement statement = connection.createStatement();
+
+            Logger.info("seeding usernames");
+            for (int i = 0; i < users.length; i++)
+                statement.executeUpdate("insert into username values(" + i + ", \'" + users[i] + "\')");
+
+            connection.commit();
+        } catch (Throwable e) {
+            Logger.warn(e.getMessage());
+            e.printStackTrace();
+        }
+
         /*JPA.withTransaction(new F.Callback0() {
             @Override
-            public void invoke() throws Throwable {*/
-                Logger.info("seeding usernames");
+            public void invoke() throws Throwable {
 
-                for (int i = 0; i < users.length; i++)
-                    usernameRepository.create(i, users[i]);
+            for (int i = 0; i < users.length; i++)
+                usernameRepository.create(i, users[i]);
         //    }
-        //});
+        //});*/
     }
 }
