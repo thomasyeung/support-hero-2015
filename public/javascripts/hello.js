@@ -77,7 +77,7 @@ function unassignShift() {
     //alert("hello world");
     var name = document.getElementById("inputName").value;
     var date = toDate(document.getElementById("inputDate").value);
-    var http = new XMLHttpRequest();
+    /*var http = new XMLHttpRequest();
     var url = "/shift?date="+date+"&name="+name;
     http.open("DELETE", url, true);
 
@@ -93,7 +93,8 @@ function unassignShift() {
         }
     }
 
-    http.send();
+    http.send();*/
+    unassign(date, name)
 }
 
 function unassign(shiftDate, name) {
@@ -107,9 +108,12 @@ function unassign(shiftDate, name) {
             var tr = document.getElementById(date)
             if (tr) {
                 deleteAllNodes(tr)
-                var c2 = document.createElement('td')
+                /*var c2 = document.createElement('td')
                 c2.innerHTML = date
-                tr.appendChild(c2)
+                tr.appendChild(c2)*/
+
+                appendDate(tr, date)
+                appendAssignButton(tr, date)
             }
         }
     }
