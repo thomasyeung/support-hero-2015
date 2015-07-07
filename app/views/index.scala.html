@@ -3,39 +3,115 @@
 @main("Welcome to Play") {
 
 
-<div>
-    <input id="inputDate0" type="text" name="date"/>
-    <input id="inputName0" type="text" name="name"/>
-    <button onclick="assignShift()">assign</button>
+<h1 class="col-sm-12" style="margin-top:10px; background:primary;"> Support Hero </h1>
+
+<div class="col-sm-12">
+    <div class="col-sm-4">
+
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">Assign Shift</h3>
+            </div>
+            <div class="panel-body">
+                <div class="col-xs-12">
+                    <label class="col-xs-4" for="inputDate0">Date</label>
+                    <input class="col-xs-8" id="inputDate0" type="text" name="date"/>
+                </div>
+                <div class="col-xs-12" style="margin-top:10px;">
+                    <label class="col-xs-4" for="inputName0">Name</label>
+                    <input class="col-xs-8" id="inputName0" type="text" name="name"/>
+                </div>
+                <div class="col-xs-12 text-center" style="margin-top:10px;">
+                    <button class="btn btn-primary" onclick="assignShift()">Assign</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">Unassign Shift</h3>
+            </div>
+            <div class="panel-body">
+                <div class="col-xs-12">
+                    <label class="col-xs-4" for="inputDate">Date</label>
+                    <input class="col-xs-8" id="inputDate" type="text" name="date"/>
+                </div>
+                <div class="col-xs-12" style="margin-top:10px;">
+                    <label class="col-xs-4" for="inputDate">Name</label>
+                    <input class="col-xs-8" id="inputName" type="text" name="name"/>
+                </div>
+                <div class="col-xs-12 text-center" style="margin-top:10px;">
+                    <button class="btn btn-primary" onclick="unassignShift()">Unassign</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">Swap shifts</h3>
+            </div>
+            <div class="panel-body">
+                <div class="col-xs-12">
+                    <label class="col-xs-4" for="inputDate1">Date 1</label>
+                    <input id="inputDate1" type="text" name="date"/>
+                </div>
+                <div class="col-xs-12" style="margin-top:10px;">
+                    <label class="col-xs-4" for="inputDate2">Date 2</label>
+                    <input id="inputDate2" type="text" name="date"/>
+                </div>
+                <div class="col-xs-12 text-center" style="margin-top:10px;">
+                    <button onclick="swapShifts()">Swap</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">Find a User's Schedule</h3>
+            </div>
+            <div class="panel-body">
+                <div class="col-xs-12">
+                    <label class="col-xs-4" for="inputStartDate">Start Date</label>
+                    <input id="inputStartDate" type="text" name="date"/>
+                </div>
+                <div class="col-xs-12" style="margin-top:10px;">
+                    <label class="col-xs-4" for="inputEndDate">End Date</label>
+                    <input id="inputEndDate" type="text" name="date"/>
+                </div>
+                <div class="col-xs-12" style="margin-top:10px;">
+                    <label class="col-xs-4" for="inputEndDate">Name</label>
+                    <input id="inputName2" type="text" name="name"/>
+                </div>
+                <div class="col-xs-12 text-center" style="margin-top:10px;">
+                    <button onclick="getUserSchedule()">Find</button>
+                </div>
+            </div>
+        </div>
+
+    <!--
+        <div>
+            <input id="inputDate1" type="text" name="date"/>
+            <input id="inputDate2" type="text" name="date"/>
+            <button onclick="swapShifts()">swap</button>
+        </div>
+
+        <div>
+            <input id="inputStartDate" type="text" name="date"/>
+            <input id="inputEndDate" type="text" name="date"/>
+            <input id="inputName2" type="text" name="name"/>
+            <button onclick="getUserSchedule()">find a user's schedule</button>
+        </div>-->
+    </div>
+
+
+
+
+    <div class="col-sm-8">
+        <button class="btn btn-default" onclick="getCurrentMonthSchedule()">Current Month's Schedule</button>
+
+        <div id="output" style="margin-top:30px;"></div>
+    </div>
+
 </div>
 
-<div>
-    <input id="inputDate" type="text" name="date"/>
-    <input id="inputName" type="text" name="name"/>
-    <button onclick="unassignShift()">unassign</button>
-</div>
-
-
-<div>
-    <input id="inputStartDate" type="text" name="date"/>
-    <input id="inputEndDate" type="text" name="date"/>
-    <input id="inputName2" type="text" name="name"/>
-    <button onclick="getUserSchedule()">find a user's schedule</button>
-</div>
-
-<div>
-    <input id="inputDate1" type="text" name="date"/>
-    <input id="inputDate2" type="text" name="date"/>
-    <button onclick="swapShifts()">swap</button>
-</div>
-
-
-<div>
-    <button onclick="getCurrentMonthSchedule()">Current Month's Schedule</button>
-</div>
-
-
-<div id="output">
-
-</div>
 }

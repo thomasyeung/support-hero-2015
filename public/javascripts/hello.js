@@ -13,6 +13,8 @@ function assignShift() {
 
     http.send("date="+date+"&name="+name);*/
 
+    assign(date, name)
+/*
     var http = new XMLHttpRequest();
     var url = "/shift";
     var params = "name="+name+"&date="+date;
@@ -34,7 +36,7 @@ function assignShift() {
         }
     }
 
-    http.send(params);
+    http.send(params);*/
 }
 
 function assign(shiftDate, name) {
@@ -57,9 +59,10 @@ function assign(shiftDate, name) {
                 var c1 = document.createElement('td')
                 c1.innerHTML = date
                 tr.appendChild(c1)
-                var c2 = document.createElement('td')
+                /*var c2 = document.createElement('td')
                 c2.innerHTML = name.toLowerCase()
-                tr.appendChild(c2)
+                tr.appendChild(c2)*/
+                appendUserAndAction(tr, date, name.toLowerCase())
             }
         }
     }
