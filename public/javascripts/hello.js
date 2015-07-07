@@ -95,9 +95,10 @@ function makeTable(schedule) {
         var c1 = document.createElement('td')
         var c2 = document.createElement('td')
 
-        var d = new Date(shift['d'])
+        var d = getNumbers(shift['d'])//new Date(shift['d'])
 
-        c1.innerHTML = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getUTCDate()
+        //c1.innerHTML = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getUTCDate()
+        c1.innerHTML = d[0] + "-" + d[1] + "-" + d[2]
         c2.innerHTML = user['name']
 
         table.appendChild(r)
@@ -131,20 +132,20 @@ function getHoliday(month, day) {
 }
 
 function isBelowDate(ms, year, month, day) {
-    var date = new Date(ms)
-    var y = date.getUTCFullYear()
-    var m = date.getUTCMonth()
-    var d = date.getUTCDate()
+    var date = getNumbers(ms)
+    var y = date[0]
+    var m = date[1]
+    var d = date[2]
 
     return y < year || (y == year && m < month) || (y == year && m == month && d < day)
 
 }
 
 function isEqualDate(ms, year, month, day) {
-    var date = new Date(ms)
-    var y = date.getUTCFullYear()
-    var m = date.getUTCMonth()
-    var d = date.getUTCDate()
+    var date = getNumbers(ms)
+    var y = date[0]
+    var m = date[1]
+    var d = date[2]
 
     return y == year && m == month && d == day
 
@@ -170,10 +171,10 @@ function makeTable2(schedule, startDay, endDay, month, year) {
         table.appendChild(r)
         r.appendChild(c1)
 
-        while (i < schedule.length && isBelowDate(Date.parse(schedule[i].d), year, month, d))
+        while (i < schedule.length && isBelowDate(schedule[i].d, year, month, d))
             i += 1
 
-        if (i < schedule.length && isEqualDate(Date.parse(schedule[i].d), year, month, d)) {
+        if (i < schedule.length && isEqualDate(schedule[i].d, year, month, d)) {
             var shift = schedule[i]
             var user = shift['username']
             var c2 = document.createElement('td')
@@ -277,25 +278,25 @@ function toDate(str) {
     var today = new Date()
 
     switch (d.length) {
-    case 1:
-    if (isDay(d[0])) {
-        result = today.getFullYear() + "-" + d[0] + "-" + today.getMonth()  // dd
-    }
-    break;
-    case 2:
-    if (isDay(d[1])) {
-        result = today.getFullYear() + "-" + d[0] + "-" + d[1]  // mm/dd
-    } else {
-        result = d[1] + "-" + d[0] + "-" + 1 // mm/yyyy
-    }
-    break;
-    case 3:
-    if (isMonth(d[0])) {
-        result = d[2] + "-" + d[0] + "-" + d[1] // mm/dd/year
-    } else {
-        result = d[0] + "-" + d[1] + "-" + d[2] // year/mm/dd
-    }
-    break;
+        case 1:
+        if (isDay(d[0])) {
+            result = today.getFullYear() + "-" + (today.getMonth()+1) + "-" + d[0]  // dd
+        }
+        break;
+        case 2:
+        if (isDay(d[1])) {
+            result = today.getFullYear() + "-" + d[0] + "-" + d[1]  // mm/dd
+        } else {
+            result = d[1] + "-" + d[0] + "-" + 1 // mm/yyyy
+        }
+        break;
+        case 3:
+        if (isMonth(d[0])) {
+            result = d[2] + "-" + d[0] + "-" + d[1] // mm/dd/year
+        } else {
+            result = d[0] + "-" + d[1] + "-" + d[2] // year/mm/dd
+        }
+        break;
     }
 
     return result;
