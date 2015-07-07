@@ -23,31 +23,24 @@ function assignShift() {
     http.setRequestHeader("Content-length", params.length);
     http.setRequestHeader("Connection", "close");
 
-    /*http.onreadystatechange = function() {//Call a function when the state changes.
+    http.onreadystatechange = function() {//Call a function when the state changes.
         if(http.readyState == 4 && http.status == 200) {
-            alert(http.responseText);
+            var tr = document.getElementById(date)
+            if (tr) {
+                var c2 = document.createElement('td')
+                c2.innerHTML = name.toLowerCase()
+                tr.appendChild(c2)
+            }
         }
-    }*/
+    }
+
     http.send(params);
+}
 
-    /*var form = document.createElement("form");
-    form.setAttribute("method", "POST");
-    form.setAttribute("action", "/shift");
-
-    var namefield = document.createElement("input");
-    namefield.setAttribute("name", "name");
-    namefield.setAttribute("type", "text");
-    namefield.setAttribute("value", name);
-    form.appendChild(namefield);
-
-    var datefield = document.createElement("input");
-    datefield.setAttribute("name", "date");
-    datefield.setAttribute("type", "text");
-    datefield.setAttribute("value", date);
-    form.appendChild(datefield);
-
-    document.getElementsByTagName('head')[0].appendChild(form);
-    form.submit();*/
+function deleteAllNodes(myNode) {
+    while (myNode.firstChild) {
+        myNode.removeChild(myNode.firstChild);
+    }
 }
 
 function unassignShift() {
@@ -57,6 +50,18 @@ function unassignShift() {
     var http = new XMLHttpRequest();
     var url = "/shift?date="+date+"&name="+name;
     http.open("DELETE", url, true);
+
+    http.onreadystatechange = function() {//Call a function when the state changes.
+        if(http.readyState == 4 && http.status == 200) {
+            var tr = document.getElementById(date)
+            if (tr) {
+                deleteAllNodes(tr)
+                var c2 = document.createElement('td')
+                c2.innerHTML = date
+                tr.appendChild(c2)
+            }
+        }
+    }
 
     http.send();
 }
@@ -96,9 +101,12 @@ function makeTable(schedule) {
         var c2 = document.createElement('td')
 
         var d = getNumbers(shift['d'])//new Date(shift['d'])
+        var txt = d[0] + "-" + d[1] + "-" + d[2]
+
+        r.id = txt
 
         //c1.innerHTML = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getUTCDate()
-        c1.innerHTML = d[0] + "-" + d[1] + "-" + d[2]
+        c1.innerHTML = txt
         c2.innerHTML = user['name']
 
         table.appendChild(r)
@@ -166,6 +174,7 @@ function makeTable2(schedule, startDay, endDay, month, year) {
         var c1 = document.createElement('td')
         var txt = year + "-" + (month+1) + "-" + d
 
+        r.id = txt
         c1.appendChild(document.createTextNode(txt))
 
         table.appendChild(r)
@@ -217,7 +226,8 @@ function getCurrentMonthSchedule() {
             //alert(http.responseText)
             var obj = JSON.parse(http.responseText)
             var e = document.getElementById('output')
-            e.innerHTML = ''
+            //e.innerHTML = ''
+            deleteAllNodes(e)
             e.appendChild(makeTable2(obj, 1, end.getDate(), month, year))
         }
     }
@@ -241,7 +251,8 @@ function getUserSchedule() {
             //alert(http.responseText)
             var obj = JSON.parse(http.responseText)
             var e = document.getElementById('output')
-            e.innerHTML = ''
+            //e.innerHTML = ''
+            deleteAllNodes(e)
             e.appendChild(makeTable(obj))
         }
     }
@@ -255,6 +266,38 @@ function swapShifts() {
     var http = new XMLHttpRequest();
     var url = "/shift/swap?date1="+date1+"&date2="+date2;
     http.open("PUT", url, true);
+
+    http.onreadystatechange = function() {//Call a function when the state changes.
+        if(http.readyState == 4 && http.status == 200) {
+            var tr1 = document.getElementById(date1)
+            var tr2 = document.getElementById(date2)
+            var obj = JSON.parse(http.responseText)
+
+            if (tr1) {
+                deleteAllNodes(tr1)
+
+                var d1 = document.createElement('td')
+                d1.innerHTML = date1
+                tr1.appendChild(d1)
+
+                var n1 = document.createElement('td')
+                n1.innerHTML = obj.name1
+                tr1.appendChild(n1)
+            }
+
+            if (tr2) {
+                deleteAllNodes(tr2)
+
+                var d2 = document.createElement('td')
+                d2.innerHTML = date2
+                tr2.appendChild(d2)
+
+                var n2 = document.createElement('td')
+                n2.innerHTML = obj.name2
+                tr2.appendChild(n2)
+            }
+        }
+    }
 
     http.send();
 }

@@ -146,7 +146,9 @@ public class Application extends Controller {
 
             connection.commit();
 
-            return ok();
+            String json = "{\"name1\":\"" + s1.username.name + "\",\"name2\":\"" + s2.username.name + "\"}";
+
+            return ok(json);
 
         } catch (Throwable e) {
             Logger.warn(e.getMessage());
