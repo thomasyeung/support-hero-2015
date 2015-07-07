@@ -344,6 +344,34 @@ function getCurrentMonthSchedule() {
     http.send()
 }
 
+function getNextMonthSchedule() {
+
+    var date = new Date()
+    var year = date.getFullYear()
+    var month = date.getMonth() + 1
+
+    var start = new Date(year, month, 1)
+    var end = new Date(year, month+1, 0)
+
+    var url = "/schedule?startDate="+start.toISOString()+"&endDate="+end.toISOString()
+
+    var http = new XMLHttpRequest()
+    http.open("GET", url, true)
+
+    http.onreadystatechange = function() {
+        if (http.readyState == 4 && http.status == 200) {
+
+            var obj = JSON.parse(http.responseText)
+            var e = document.getElementById('output')
+
+            deleteAllNodes(e)
+            populateTable2(e, obj, 1, end.getDate(), month, year)
+        }
+    }
+
+    http.send()
+}
+
 function getUserSchedule() {
 
     var start = toDate(document.getElementById("inputStartDate").value)
