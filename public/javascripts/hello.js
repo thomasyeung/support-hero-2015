@@ -56,12 +56,8 @@ function assign(shiftDate, name) {
             var tr = document.getElementById(date)
             if (tr) {
                 deleteAllNodes(tr)
-                var c1 = document.createElement('td')
-                c1.innerHTML = date
-                tr.appendChild(c1)
-                /*var c2 = document.createElement('td')
-                c2.innerHTML = name.toLowerCase()
-                tr.appendChild(c2)*/
+
+                appendDate(tr, date)
                 appendUserAndAction(tr, date, name.toLowerCase())
             }
         }
@@ -80,23 +76,6 @@ function unassignShift() {
     //alert("hello world");
     var name = document.getElementById("inputName").value;
     var date = toDate(document.getElementById("inputDate").value);
-    /*var http = new XMLHttpRequest();
-    var url = "/shift?date="+date+"&name="+name;
-    http.open("DELETE", url, true);
-
-    http.onreadystatechange = function() {//Call a function when the state changes.
-        if(http.readyState == 4 && http.status == 200) {
-            var tr = document.getElementById(date)
-            if (tr) {
-                deleteAllNodes(tr)
-                var c2 = document.createElement('td')
-                c2.innerHTML = date
-                tr.appendChild(c2)
-            }
-        }
-    }
-
-    http.send();*/
     unassign(date, name)
 }
 
@@ -111,9 +90,6 @@ function unassign(shiftDate, name) {
             var tr = document.getElementById(date)
             if (tr) {
                 deleteAllNodes(tr)
-                /*var c2 = document.createElement('td')
-                c2.innerHTML = date
-                tr.appendChild(c2)*/
 
                 appendDate(tr, date)
                 appendAssignButton(tr, date)
@@ -143,34 +119,25 @@ function makeUL(array) {
     return list;
 }
 
-function makeTable(schedule) {
+function populateTable(table, schedule) {
     schedule.sort(function(a, b) {
         return new Date(a.d) - new Date(b.d);
     });
-
-    var table = document.createElement('table')
 
     for (var i = 0; i < schedule.length; i++) {
         var shift = schedule[i];
         var user = shift['username'];
 
         var r = document.createElement('tr')
-        var c1 = document.createElement('td')
-        var c2 = document.createElement('td')
 
         var d = getNumbers(shift['d'])//new Date(shift['d'])
         var txt = d[0] + "-" + d[1] + "-" + d[2]
 
         r.id = txt
 
-        //c1.innerHTML = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getUTCDate()
-        c1.innerHTML = txt
-        //c2.innerHTML = user['name']
-
         table.appendChild(r)
-        r.appendChild(c1)
-        //r.appendChild(c2)
 
+        appendDate(r, txt)
         appendUserAndAction(r, txt, user['name'])
     }
 
@@ -220,7 +187,12 @@ function isEqualDate(ms, year, month, day) {
 }
 
 function appendAssignButton(tr, date) {
+    var c = document.createElement('td')
+    c.className = "col-xs-4 text-left"
+
     var button = document.createElement('button')
+    button.className="btn-xs btn-primary"
+    button.style="margin:2px;"
     button.innerHTML = 'assign'
     button.onclick = function () {
         var name = prompt("Please enter a name", "");
@@ -228,12 +200,15 @@ function appendAssignButton(tr, date) {
             assign(date, name)
         }
     }
-    tr.appendChild(button)
+    tr.appendChild(c)
+    c.appendChild(button)
 }
 
 function appendUnassignButton(tr, date, name) {
     var button = document.createElement('button')
     button.innerHTML = 'unassign'
+    button.className="btn-xs btn-primary"
+    button.style="margin:2px;"
     button.onclick = function () {
         unassign(date, name)
     }
@@ -243,6 +218,8 @@ function appendUnassignButton(tr, date, name) {
 function appendSwapButton(tr, date) {
     var button = document.createElement('button')
     button.innerHTML = 'swap'
+    button.className="btn-xs btn-primary"
+    button.style="margin:2px;"
     button.onclick = function () {
         var date2 = prompt(date + "\n\nPlease enter a date (e.g. 7/31/2015, 7/31, or 31)", "");
         if (date2) {
@@ -255,6 +232,7 @@ function appendSwapButton(tr, date) {
 // add user
 function appendUserAndAction(tr, date, name) {
     var c2 = document.createElement('td')
+    c2.className = "col-xs-4 text-left"
     c2.appendChild(document.createTextNode(name))
     tr.appendChild(c2)
 
@@ -264,34 +242,52 @@ function appendUserAndAction(tr, date, name) {
 
 function appendDate(tr, txt) {
     var c1 = document.createElement('td')
+    c1.className = "col-xs-2 text-left"
     c1.appendChild(document.createTextNode(txt))
     tr.appendChild(c1)
 }
 
-function makeTable2(schedule, startDay, endDay, month, year) {
+function createTableRow(day, startDay, id) {
+    var ctr = day - startDay
+    var tr = document.createElement('tr')
+    tr.id = id
+    if (ctr % 2 == 0) {
+        tr.style = "background-color:Azure;"
+    }
+    return tr
+}
+
+function appendEmptyColumn(tr) {
+    var c = document.createElement('td')
+    tr.appendChild(c)
+}
+
+function appendWeekend(tr) {
+    var c2 = document.createElement('td')
+    c2.className = "col-xs-4 text-left"
+    c2.appendChild(document.createTextNode("weekend"))
+    tr.appendChild(c2)
+
+    appendEmptyColumn(tr)
+}
+
+function populateTable2(table, schedule, startDay, endDay, month, year) {
     schedule.sort(function(a, b) {
         var t1 =  new Date(a.d)
         var t2 = new Date(b.d)
         return t1 - t2;
     });
 
-    var table = document.createElement('table')
     var i = 0
 
     for (var d = startDay; d <= endDay; d+=1) {
-        var r = document.createElement('tr')
-        var c1 = document.createElement('td')
         var txt = year + "-" + (month+1) + "-" + d
 
-        r.id = txt
-        //c1.appendChild(document.createTextNode(txt))
+        var r = createTableRow(d, startDay, txt) //document.createElement('tr')
+        //r.id = txt
+        table.appendChild(r)
 
         appendDate(r, txt)
-
-        table.appendChild(r)
-        //r.appendChild(c1)
-
-
 
         while (i < schedule.length && isBelowDate(schedule[i].d, year, month+1, d))
             i += 1
@@ -299,23 +295,21 @@ function makeTable2(schedule, startDay, endDay, month, year) {
         if (i < schedule.length && isEqualDate(schedule[i].d, year, month+1, d)) {
             var shift = schedule[i]
             var user = shift['username']
-            /*var c2 = document.createElement('td')
-            c2.appendChild(document.createTextNode(user['name']))
-            r.appendChild(c2)*/
 
             appendUserAndAction(r, txt, user['name'])
 
             i += 1
         } else if (getHoliday(month+1, d) != undefined) {
             var c2 = document.createElement('td')
+            c2.className = "col-xs-4 text-left"
             c2.appendChild(document.createTextNode(getHoliday(month+1, d)))
             r.appendChild(c2)
+            appendEmptyColumn(r)
         } else if (isWeekend(year, month, d)) {
-            var c2 = document.createElement('td')
-            c2.appendChild(document.createTextNode("weekend"))
-            r.appendChild(c2)
+            appendWeekend(r)
         } else {
             appendAssignButton(r, txt)
+            appendEmptyColumn(r)
         }
     }
 
@@ -338,12 +332,12 @@ function getCurrentMonthSchedule() {
 
     http.onreadystatechange = function() {
         if (http.readyState == 4 && http.status == 200) {
-            //alert(http.responseText)
+
             var obj = JSON.parse(http.responseText)
             var e = document.getElementById('output')
-            //e.innerHTML = ''
+
             deleteAllNodes(e)
-            e.appendChild(makeTable2(obj, 1, end.getDate(), month, year))
+            populateTable2(e, obj, 1, end.getDate(), month, year)
         }
     }
 
@@ -368,7 +362,7 @@ function getUserSchedule() {
             var e = document.getElementById('output')
             //e.innerHTML = ''
             deleteAllNodes(e)
-            e.appendChild(makeTable(obj))
+            populateTable(e, obj)
         }
     }
 
@@ -379,43 +373,6 @@ function swapShifts() {
     var date1 = toDate(document.getElementById("inputDate1").value);
     var date2 = toDate(document.getElementById("inputDate2").value);
     swapShifts2(date1, date2)
-    /*var http = new XMLHttpRequest();
-    var url = "/shift/swap?date1="+date1+"&date2="+date2;
-    http.open("PUT", url, true);
-
-    http.onreadystatechange = function() {//Call a function when the state changes.
-        if(http.readyState == 4 && http.status == 200) {
-            var tr1 = document.getElementById(date1)
-            var tr2 = document.getElementById(date2)
-            var obj = JSON.parse(http.responseText)
-
-            if (tr1) {
-                deleteAllNodes(tr1)
-
-                var d1 = document.createElement('td')
-                d1.innerHTML = date1
-                tr1.appendChild(d1)
-
-                var n1 = document.createElement('td')
-                n1.innerHTML = obj.name1
-                tr1.appendChild(n1)
-            }
-
-            if (tr2) {
-                deleteAllNodes(tr2)
-
-                var d2 = document.createElement('td')
-                d2.innerHTML = date2
-                tr2.appendChild(d2)
-
-                var n2 = document.createElement('td')
-                n2.innerHTML = obj.name2
-                tr2.appendChild(n2)
-            }
-        }
-    }
-
-    http.send();*/
 }
 
 function swapShifts2(date1, date2) {
@@ -433,28 +390,12 @@ function swapShifts2(date1, date2) {
                 deleteAllNodes(tr1)
                 appendDate(tr1, date1)
                 appendUserAndAction(tr1, date1, obj.name1)
-
-                /*var d1 = document.createElement('td')
-                d1.innerHTML = date1
-                tr1.appendChild(d1)
-
-                var n1 = document.createElement('td')
-                n1.innerHTML = obj.name1
-                tr1.appendChild(n1)*/
             }
 
             if (tr2) {
                 deleteAllNodes(tr2)
                 appendDate(tr2, date2)
                 appendUserAndAction(tr2, date2, obj.name2)
-
-                /*var d2 = document.createElement('td')
-                d2.innerHTML = date2
-                tr2.appendChild(d2)
-
-                var n2 = document.createElement('td')
-                n2.innerHTML = obj.name2
-                tr2.appendChild(n2)*/
             }
         }
     }
@@ -495,11 +436,6 @@ function toDate(str) {
         break;
         case 3:
         result = isMonth(d[0]) ? d[2] + "-" + d[0] + "-" + d[1] : d[0] + "-" + d[1] + "-" + d[2]
-        /*if (isMonth(d[0])) {
-            result = d[2] + "-" + d[0] + "-" + d[1] // mm/dd/year
-        } else {
-            result = d[0] + "-" + d[1] + "-" + d[2] // year/mm/dd
-        }*/
         break;
     }
 
