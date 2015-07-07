@@ -22,7 +22,7 @@ public class DefaultUsernameRepo implements UsernameRepo {
         return null;
     }*/
 
-    public boolean create (int id, String name) {
+    public boolean create (String id, String name) {
         Username username = new Username();
         username.id = id;
         username.name = name.toLowerCase();

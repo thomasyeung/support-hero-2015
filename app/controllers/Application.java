@@ -17,6 +17,7 @@ import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class Application extends Controller {
 
@@ -46,6 +47,13 @@ public class Application extends Controller {
             java.sql.Date sqlDate = new java.sql.Date(parsed.getTime());
 
             Username u = usernameRepo.findOne(name);
+
+            while (u == null) {
+                String id = UUID.randomUUID().toString();
+                Logger.info("Create a new username (" + id + ", " + name + ")");
+                usernameRepo.create(id, name);
+                u = usernameRepo.findOne(name);
+            }
 
             if (!scheduleRepo.createShift(sqlDate, u))
                 Logger.warn("Can't assign shift on " + date + " to " + name);

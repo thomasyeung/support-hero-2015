@@ -9,7 +9,7 @@ import javax.persistence.*;
 public class Username {
 
     @Id
-    public int id;
+    public String id;
 
     public String name;
 }

@@ -31,7 +31,7 @@ public class JdbcUsernameRepo implements UsernameRepo {
             ResultSet rs = statement.executeQuery(sql);
 
             if (rs.next()) {
-                username.id = rs.getInt("id");
+                username.id = rs.getString("id");
                 username.name = rs.getString("name");
                 return username;
             }
@@ -47,12 +47,12 @@ public class JdbcUsernameRepo implements UsernameRepo {
     }
 
     @Override
-    public boolean create(int id, String name) {
+    public boolean create(String id, String name) {
         //Connection connection = DB.getConnection();
 
         try {
             Statement statement = connection.createStatement();
-            statement.executeUpdate("insert into username values(" + id + ", \'" + name.toLowerCase() + "\')");
+            statement.executeUpdate("insert into username values(\'" + id + "\', \'" + name.toLowerCase() + "\')");
 
             return true;
 

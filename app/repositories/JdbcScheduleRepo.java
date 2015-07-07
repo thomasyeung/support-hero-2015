@@ -39,7 +39,7 @@ public class JdbcScheduleRepo implements ScheduleRepo {
             if (rs.next()) {
                 shift.d = rs.getDate("d");
                 shift.username = new Username();
-                shift.username.id = rs.getInt("userid");
+                shift.username.id = rs.getString("userid");
                 shift.username.name = rs.getString("name");
                 return shift;
             }
@@ -70,7 +70,7 @@ public class JdbcScheduleRepo implements ScheduleRepo {
                 Shift shift = new Shift();
                 shift.username = new Username();
                 shift.d = rs.getDate("d");
-                shift.username.id = rs.getInt("userid");
+                shift.username.id = rs.getString("userid");
                 shift.username.name = rs.getString("name");
                 list.add(shift);
             }
@@ -103,7 +103,7 @@ public class JdbcScheduleRepo implements ScheduleRepo {
                 Shift shift = new Shift();
                 shift.username = new Username();
                 shift.d = rs.getDate("d");
-                shift.username.id = rs.getInt("userid");
+                shift.username.id = rs.getString("userid");
                 shift.username.name = rs.getString("name");
                 list.add(shift);
             }
@@ -125,7 +125,7 @@ public class JdbcScheduleRepo implements ScheduleRepo {
 
         try {
             Statement statement = connection.createStatement();
-            statement.executeUpdate("insert into schedule values(\'" + str + "\', " + username.id + ")");
+            statement.executeUpdate("insert into schedule values(\'" + str + "\', \'" + username.id + "\')");
 
             return true;
 
@@ -144,7 +144,7 @@ public class JdbcScheduleRepo implements ScheduleRepo {
 
         try {
             Statement statement = connection.createStatement();
-            statement.executeUpdate("update schedule set userid=" + s.username.id + " where d= \'" + str + "\'");
+            statement.executeUpdate("update schedule set userid=\'" + s.username.id + "\' where d=\'" + str + "\'");
 
             return true;
 

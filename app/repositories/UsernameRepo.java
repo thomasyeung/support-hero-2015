@@ -8,9 +8,9 @@ import models.Username;
 public interface UsernameRepo {
 
     public Username findOne ( String name );
-    //public Username get ( int id );
-    public boolean create ( int id, String name );
-    //public boolean delete ( int id );
-    //public boolean update ( int id, String name );
+    //public Username get ( String id );
+    public boolean create ( String id, String name );
+    //public boolean delete ( String id );
+    //public boolean update ( String id, String name );
 
 }

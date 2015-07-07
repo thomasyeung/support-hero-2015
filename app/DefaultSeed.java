@@ -37,11 +37,11 @@ public class DefaultSeed implements Seed {
             ResultSet rs = dm.getTables(null, null, "username", null);
 
             if (!rs.next()) {
-                st.executeUpdate("create table username (id int primary key, name varchar(255))");
+                st.executeUpdate("create table username (id varchar(255) primary key, name varchar(255))");
                 seedUsernames();
             }
 
-            st.executeUpdate("create table if not exists schedule (d date primary key, userid int references username(id))");
+            st.executeUpdate("create table if not exists schedule (d date primary key, userid varchar(255) references username(id))");
             connection.commit();
         } catch (Throwable e) {
             Logger.warn(e.getMessage());
@@ -63,7 +63,7 @@ public class DefaultSeed implements Seed {
 
             Logger.info("seeding usernames");
             for (int i = 0; i < users.length; i++)
-                usernameRepository.create(i, users[i]);
+                usernameRepository.create(Integer.toString(i), users[i]);
                 //statement.executeUpdate("insert into username values(" + i + ", \'" + users[i].toLowerCase() + "\')");
 
             connection.commit();
