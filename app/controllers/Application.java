@@ -8,10 +8,7 @@ import play.db.jpa.Transactional;
 import play.libs.Json;
 import play.mvc.*;
 
-import repositories.DefaultScheduleRepo;
-import repositories.DefaultUsernameRepo;
-import repositories.ScheduleRepo;
-import repositories.UsernameRepo;
+import repositories.*;
 import views.html.*;
 
 import java.sql.Date;
@@ -20,8 +17,8 @@ import java.util.List;
 
 public class Application extends Controller {
 
-    UsernameRepo usernameRepo = new DefaultUsernameRepo();
-    ScheduleRepo scheduleRepo = new DefaultScheduleRepo();
+    UsernameRepo usernameRepo = new JdbcUsernameRepo();
+    ScheduleRepo scheduleRepo = new JdbcScheduleRepo();
 
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -32,7 +29,7 @@ public class Application extends Controller {
 
 
     // assign shifts by date and name
-    @Transactional
+    //@Transactional
     public Result assignShiftByName() {
         String date = Form.form().bindFromRequest().get("date");
         String name = Form.form().bindFromRequest().get("name");
@@ -54,7 +51,7 @@ public class Application extends Controller {
         return redirect(routes.Application.index());
     }
 
-    @Transactional
+    //@Transactional
     public Result unassignShift(String date) {
 
         try {
@@ -75,7 +72,7 @@ public class Application extends Controller {
         return redirect(routes.Application.index());
     }
 
-    @Transactional
+    //@Transactional
     public Result getSchedule(String startDate, String endDate) {
         java.sql.Date start, end;
         List<Shift> schedule;
@@ -95,7 +92,7 @@ public class Application extends Controller {
         return badRequest();
     }
 
-    @Transactional
+    //@Transactional
     public Result getScheduleByName(String name, String startDate, String endDate) {
         java.sql.Date start, end;
         List<Shift> schedule;
@@ -117,7 +114,7 @@ public class Application extends Controller {
         return badRequest();
     }
 
-    @Transactional
+    //@Transactional
     public Result swapShifts(String date1, String date2) {
         try {
             Date d1 = new Date(dateFormat.parse(date1).getTime());
@@ -130,8 +127,8 @@ public class Application extends Controller {
             s1.username = s2.username;
             s2.username = u;
 
-            //scheduleRepo.updateShift(s1);
-            //scheduleRepo.updateShift(s2);
+            scheduleRepo.updateShift(s1);
+            scheduleRepo.updateShift(s2);
 
             return ok();
 

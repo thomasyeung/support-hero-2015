@@ -55,11 +55,11 @@ public class DefaultScheduleRepo implements ScheduleRepo {
         return true;
     }
 
-    /*@Override
+    @Override
     public boolean updateShift(Shift s) {
 
         return true;
-    }*/
+    }
 
     @Override
     public boolean deleteShift(Shift s) {

@@ -2,6 +2,7 @@ import play.Logger;
 import play.db.jpa.JPA;
 import play.libs.F;
 import repositories.DefaultUsernameRepo;
+import repositories.JdbcUsernameRepo;
 import repositories.UsernameRepo;
 
 import java.sql.Connection;
@@ -16,7 +17,7 @@ import static play.db.DB.*;
  */
 public class DefaultSeed implements Seed {
 
-    UsernameRepo usernameRepository = new DefaultUsernameRepo();
+    UsernameRepo usernameRepository = new JdbcUsernameRepo();
 
     public void loadInitalData() {
 
@@ -50,14 +51,14 @@ public class DefaultSeed implements Seed {
                 "Jay", "Boris", "Eadon", "Franky", "Luis", "James"};
 
 
-        JPA.withTransaction(new F.Callback0() {
+        /*JPA.withTransaction(new F.Callback0() {
             @Override
-            public void invoke() throws Throwable {
+            public void invoke() throws Throwable {*/
                 Logger.info("seeding usernames");
 
                 for (int i = 0; i < users.length; i++)
                     usernameRepository.create(i, users[i]);
-            }
-        });
+        //    }
+        //});
     }
 }

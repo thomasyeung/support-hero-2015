@@ -45,7 +45,7 @@ function makeUL(array) {
 
 function makeTable(schedule) {
     schedule.sort(function(a, b) {
-        return new Date(a.date) - new Date(b.date);
+        return new Date(a.d) - new Date(b.d);
     });
 
     var table = document.createElement('table')
@@ -115,7 +115,9 @@ function isEqualDate(ms, year, month, day) {
 
 function makeTable2(schedule, startDay, endDay, month, year) {
     schedule.sort(function(a, b) {
-        return new Date(a.date) - new Date(b.date);
+        var t1 =  new Date(a.d)
+        var t2 = new Date(b.d)
+        return t1 - t2;
     });
 
     var table = document.createElement('table')
