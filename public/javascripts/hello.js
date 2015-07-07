@@ -220,7 +220,7 @@ function appendAssignButton(tr, date) {
     var button = document.createElement('button')
     button.innerHTML = 'assign'
     button.onclick = function () {
-        var name = prompt("Please enter name", "");
+        var name = prompt("Please enter a name", "");
         if (name) {
             assign(date, name)
         }
@@ -241,7 +241,10 @@ function appendSwapButton(tr, date) {
     var button = document.createElement('button')
     button.innerHTML = 'swap'
     button.onclick = function () {
-        unassign(date, name)
+        var date2 = prompt(date + "\n\nPlease enter a date (e.g. 7/31/2015, 7/31, or 31)", "");
+        if (date2) {
+            swapShifts2(date, toDate(date2))
+        }
     }
     tr.appendChild(button)
 }
@@ -252,6 +255,7 @@ function appendUserAndAction(tr, date, name) {
     c2.appendChild(document.createTextNode(name))
     tr.appendChild(c2)
 
+    appendSwapButton(tr, date)
     appendUnassignButton(tr, date, name)
 }
 
@@ -494,6 +498,10 @@ function toDate(str) {
             result = d[0] + "-" + d[1] + "-" + d[2] // year/mm/dd
         }*/
         break;
+    }
+
+    if (!result) {
+        alert("Invalid date: " + str + ". Please use one of the following formats: mm/dd/yyyy, mm/dd, dd")
     }
 
     return result;
