@@ -37,6 +37,36 @@ function assignShift() {
     http.send(params);
 }
 
+function assign(shiftDate, name) {
+    var date = toDate(shiftDate);
+    var http = new XMLHttpRequest();
+    var url = "/shift";
+    var params = "name="+name+"&date="+date;
+    http.open("POST", url, true);
+
+    //Send the proper header information along with the request
+    http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    http.setRequestHeader("Content-length", params.length);
+    http.setRequestHeader("Connection", "close");
+
+    http.onreadystatechange = function() {//Call a function when the state changes.
+        if(http.readyState == 4 && http.status == 200) {
+            var tr = document.getElementById(date)
+            if (tr) {
+                deleteAllNodes(tr)
+                var c1 = document.createElement('td')
+                c1.innerHTML = date
+                tr.appendChild(c1)
+                var c2 = document.createElement('td')
+                c2.innerHTML = name.toLowerCase()
+                tr.appendChild(c2)
+            }
+        }
+    }
+
+    http.send(params);
+}
+
 function deleteAllNodes(myNode) {
     while (myNode.firstChild) {
         myNode.removeChild(myNode.firstChild);
@@ -159,6 +189,18 @@ function isEqualDate(ms, year, month, day) {
 
 }
 
+function appendAssignButton(tr, date) {
+    var button = document.createElement('button')
+    button.innerHTML = 'assign'
+    button.onclick = function () {
+        var name = prompt("Please enter name", "");
+        if (name) {
+            assign(date, name)
+        }
+    }
+    tr.appendChild(button)
+}
+
 function makeTable2(schedule, startDay, endDay, month, year) {
     schedule.sort(function(a, b) {
         var t1 =  new Date(a.d)
@@ -201,6 +243,7 @@ function makeTable2(schedule, startDay, endDay, month, year) {
             c2.appendChild(document.createTextNode("weekend"))
             r.appendChild(c2)
         } else {
+            appendAssignButton(r, txt)
         }
     }
 
