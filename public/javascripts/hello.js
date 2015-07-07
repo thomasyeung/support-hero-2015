@@ -2,25 +2,68 @@ if (window.console) {
   console.log("Welcome to your Play application's JavaScript!");
 }
 
+function post(path, params, method) {
+    method = method || "post"; // Set method to post by default if not specified.
+
+    // The rest of this code assumes you are not using a library.
+    // It can be made less wordy if you use one.
+    var form = document.createElement("form");
+    form.setAttribute("method", method);
+    form.setAttribute("action", path);
+
+    for(var key in params) {
+        if(params.hasOwnProperty(key)) {
+            var hiddenField = document.createElement("input");
+            hiddenField.setAttribute("type", "hidden");
+            hiddenField.setAttribute("name", key);
+            hiddenField.setAttribute("value", params[key]);
+
+            form.appendChild(hiddenField);
+         }
+    }
+
+    document.body.appendChild(form);
+    form.submit();
+}
+
+function assignShift() {
+    //alert("hello world");
+    var name = document.getElementById("inputName0").value;
+    var date = toDate(document.getElementById("inputDate0").value);
+    /*var http = new XMLHttpRequest();
+    var url = "/shift";
+    http.open("POST", url, true);
+
+    http.send("date="+date+"&name="+name);*/
+
+    var form = document.createElement("form");
+    form.setAttribute("method", "POST");
+    form.setAttribute("action", "/shift");
+
+    var namefield = document.createElement("input");
+    namefield.setAttribute("name", "name");
+    namefield.setAttribute("type", "text");
+    namefield.setAttribute("value", name);
+    form.appendChild(namefield);
+
+    var datefield = document.createElement("input");
+    datefield.setAttribute("name", "date");
+    datefield.setAttribute("type", "text");
+    datefield.setAttribute("value", date);
+    form.appendChild(datefield);
+
+    document.getElementsByTagName('head')[0].appendChild(form);
+    form.submit();
+}
+
 function unassignShift() {
     //alert("hello world");
     var name = document.getElementById("inputName").value;
-    var date = document.getElementById("inputDate").value;
+    var date = toDate(document.getElementById("inputDate").value);
     var http = new XMLHttpRequest();
     var url = "/shift?date="+date+"&name="+name;
     http.open("DELETE", url, true);
 
-    //Send the proper header information along with the request
-    //http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    //http.setRequestHeader("Content-length", params.length);
-    //http.setRequestHeader("Connection", "close");
-
-    //http.onreadystatechange = function() {//Call a function when the state changes.
-    //    if(http.readyState == 4 && http.status == 200) {
-    //        alert(http.responseText);
-    //    }
-    //}
-    //http.send(params);
     http.send();
 }
 
@@ -189,8 +232,8 @@ function getCurrentMonthSchedule() {
 
 function getUserSchedule() {
 
-    var start = document.getElementById("inputStartDate").value
-    var end = document.getElementById("inputEndDate").value
+    var start = toDate(document.getElementById("inputStartDate").value)
+    var end = toDate(document.getElementById("inputEndDate").value)
     var name = document.getElementById("inputName2").value
 
     var url = "/schedule/name?name="+name+"&startDate="+start+"&endDate="+end
@@ -212,11 +255,54 @@ function getUserSchedule() {
 }
 
 function swapShifts() {
-    var date1 = document.getElementById("inputDate1").value;
-    var date2 = document.getElementById("inputDate2").value;
+    var date1 = toDate(document.getElementById("inputDate1").value);
+    var date2 = toDate(document.getElementById("inputDate2").value);
     var http = new XMLHttpRequest();
     var url = "/shift/swap?date1="+date1+"&date2="+date2;
     http.open("PUT", url, true);
 
     http.send();
+}
+
+function isMonth(d) {
+    return d >= 1 && d <= 12
+}
+
+function isDay(d) {
+    return d >= 1 && d <= 31
+}
+
+function getNumbers(str) {
+    return str.match(/^\d+|\d+\b|\d+(?=\w)/g)
+             .map(function (v) {return +v;});
+}
+
+function toDate(str) {
+    var d = getNumbers(str)
+    var result = ""
+    var today = new Date()
+
+    switch (d.length) {
+    case 1:
+    if (isDay(d[0])) {
+        result = today.getFullYear() + "-" + d[0] + "-" + today.getMonth()  // dd
+    }
+    break;
+    case 2:
+    if (isDay(d[1])) {
+        result = today.getFullYear() + "-" + d[0] + "-" + d[1]  // mm/dd
+    } else {
+        result = d[1] + "-" + d[0] + "-" + 1 // mm/yyyy
+    }
+    break;
+    case 3:
+    if (isMonth(d[0])) {
+        result = d[2] + "-" + d[0] + "-" + d[1] // mm/dd/year
+    } else {
+        result = d[0] + "-" + d[1] + "-" + d[2] // year/mm/dd
+    }
+    break;
+    }
+
+    return result;
 }

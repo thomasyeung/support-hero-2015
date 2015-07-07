@@ -16,6 +16,7 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Map;
 
 public class Application extends Controller {
 
@@ -34,6 +35,7 @@ public class Application extends Controller {
     // assign shifts by date and name
     //@Transactional
     public Result assignShiftByName() {
+        //Map<String, String[]> values = request().body().asFormUrlEncoded();
         String date = Form.form().bindFromRequest().get("date");
         String name = Form.form().bindFromRequest().get("name");
 

@@ -2,11 +2,12 @@
 
 @main("Welcome to Play") {
 
-<form method="POST" action="@routes.Application.assignShiftByName()">
-    <input type="text" name="date"/>
-    <input type="text" name="name"/>
-    <button>assign</button>
-</form>
+
+<div>
+    <input id="inputDate0" type="text" name="date"/>
+    <input id="inputName0" type="text" name="name"/>
+    <button onclick="assignShift()">assign</button>
+</div>
 
 <div>
     <input id="inputDate" type="text" name="date"/>
