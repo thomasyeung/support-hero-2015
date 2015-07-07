@@ -171,10 +171,10 @@ function makeTable2(schedule, startDay, endDay, month, year) {
         table.appendChild(r)
         r.appendChild(c1)
 
-        while (i < schedule.length && isBelowDate(schedule[i].d, year, month, d))
+        while (i < schedule.length && isBelowDate(schedule[i].d, year, month+1, d))
             i += 1
 
-        if (i < schedule.length && isEqualDate(schedule[i].d, year, month, d)) {
+        if (i < schedule.length && isEqualDate(schedule[i].d, year, month+1, d)) {
             var shift = schedule[i]
             var user = shift['username']
             var c2 = document.createElement('td')
