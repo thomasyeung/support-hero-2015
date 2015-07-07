@@ -58,7 +58,7 @@ public class DefaultSeed implements Seed {
 
             Logger.info("seeding usernames");
             for (int i = 0; i < users.length; i++)
-                statement.executeUpdate("insert into username values(" + i + ", \'" + users[i] + "\')");
+                statement.executeUpdate("insert into username values(" + i + ", \'" + users[i].toLowerCase() + "\')");
 
             connection.commit();
         } catch (Throwable e) {

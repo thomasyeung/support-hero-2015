@@ -17,10 +17,11 @@ public class JdbcUsernameRepo implements UsernameRepo {
 
         Username username = new Username();
         Connection connection = DB.getConnection();
+        String sql = "select * from username where name = \'" + name.toLowerCase() + "\' limit 1";
 
         try {
             Statement statement = connection.createStatement();
-            ResultSet rs = statement.executeQuery("select * from username where name = \'" + name + "\' limit 1");
+            ResultSet rs = statement.executeQuery(sql);
 
             if (rs.next()) {
                 username.id = rs.getInt("id");
@@ -44,7 +45,7 @@ public class JdbcUsernameRepo implements UsernameRepo {
 
         try {
             Statement statement = connection.createStatement();
-            statement.executeUpdate("insert into username values(" + id + ", \'" + name + "\')");
+            statement.executeUpdate("insert into username values(" + id + ", \'" + name.toLowerCase() + "\')");
 
             return true;
 
