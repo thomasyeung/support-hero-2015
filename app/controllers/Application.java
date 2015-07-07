@@ -4,6 +4,7 @@ import models.Shift;
 import models.Username;
 import play.*;
 import play.data.Form;
+import play.db.DB;
 import play.db.jpa.Transactional;
 import play.libs.Json;
 import play.mvc.*;
@@ -11,14 +12,16 @@ import play.mvc.*;
 import repositories.*;
 import views.html.*;
 
+import java.sql.Connection;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class Application extends Controller {
 
-    UsernameRepo usernameRepo = new JdbcUsernameRepo();
-    ScheduleRepo scheduleRepo = new JdbcScheduleRepo();
+    Connection connection = DB.getConnection();
+    UsernameRepo usernameRepo = new JdbcUsernameRepo(connection);
+    ScheduleRepo scheduleRepo = new JdbcScheduleRepo(connection);
 
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -35,6 +38,7 @@ public class Application extends Controller {
         String name = Form.form().bindFromRequest().get("name");
 
         try {
+            connection.setAutoCommit(false);
             java.util.Date parsed = dateFormat.parse(date);
 
             java.sql.Date sqlDate = new java.sql.Date(parsed.getTime());
@@ -43,6 +47,7 @@ public class Application extends Controller {
 
             if (!scheduleRepo.createShift(sqlDate, u))
                 Logger.warn("Can't assign shift on " + date + " to " + name);
+            connection.commit();
 
         } catch (Throwable e) {
             Logger.warn(e.getMessage());
@@ -55,6 +60,7 @@ public class Application extends Controller {
     public Result unassignShift(String date) {
 
         try {
+            connection.setAutoCommit(false);
             java.util.Date parsed = dateFormat.parse(date);
             java.sql.Date sqlDate = new java.sql.Date(parsed.getTime());
 
@@ -64,6 +70,7 @@ public class Application extends Controller {
 
             if (!deleted)
                 Logger.warn("Can't delete shift on" + date);
+            connection.commit();
 
         } catch (Throwable e) {
             Logger.warn(e.getMessage());
@@ -78,10 +85,12 @@ public class Application extends Controller {
         List<Shift> schedule;
 
         try {
+            connection.setAutoCommit(false);
             start = new java.sql.Date(dateFormat.parse(startDate).getTime());
             end = new java.sql.Date(dateFormat.parse(endDate).getTime());
 
             schedule = scheduleRepo.getShifts(start, end);
+            connection.commit();
 
             return ok(Json.toJson(schedule));
 
@@ -99,11 +108,13 @@ public class Application extends Controller {
         Username username;
 
         try {
+            connection.setAutoCommit(false);
             start = new java.sql.Date(dateFormat.parse(startDate).getTime());
             end = new java.sql.Date(dateFormat.parse(endDate).getTime());
             username = usernameRepo.findOne(name);
 
             schedule = scheduleRepo.getShiftsByUser(username, start, end);
+            connection.commit();
 
             return ok(Json.toJson(schedule));
 
@@ -117,6 +128,7 @@ public class Application extends Controller {
     //@Transactional
     public Result swapShifts(String date1, String date2) {
         try {
+            connection.setAutoCommit(false);
             Date d1 = new Date(dateFormat.parse(date1).getTime());
             Date d2 = new Date(dateFormat.parse(date2).getTime());
 
@@ -129,6 +141,8 @@ public class Application extends Controller {
 
             scheduleRepo.updateShift(s1);
             scheduleRepo.updateShift(s2);
+
+            connection.commit();
 
             return ok();
 

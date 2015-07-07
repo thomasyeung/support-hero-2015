@@ -17,6 +17,12 @@ import java.util.List;
  */
 public class JdbcScheduleRepo implements ScheduleRepo {
 
+    Connection connection;
+
+    public JdbcScheduleRepo(Connection connection) {
+        this.connection = connection;
+    }
+
     @Override
     public Shift getShift(Date date) {
 
@@ -24,7 +30,7 @@ public class JdbcScheduleRepo implements ScheduleRepo {
         String sql = "select * from " + select1 + " s left join username u on s.userid = u.id";
 
         Shift shift = new Shift();
-        Connection connection = DB.getConnection();
+        //Connection connection = DB.getConnection();
 
         try {
             Statement statement = connection.createStatement();
@@ -53,7 +59,7 @@ public class JdbcScheduleRepo implements ScheduleRepo {
         String select1 = "(select * from schedule where d >= \'" + start.toString() + "\' and d <= \'" + end.toString() + "\')";
         String sql = "select * from " + select1 + " s left join username u on s.userid = u.id";
 
-        Connection connection = DB.getConnection();
+        //Connection connection = DB.getConnection();
         List<Shift> list = new ArrayList<Shift>();
 
         try {
@@ -86,7 +92,7 @@ public class JdbcScheduleRepo implements ScheduleRepo {
         String select1 = "(select * from schedule " + condition + ")";
         String sql = "select * from " + select1 + " s left join username u on s.userid = u.id";
 
-        Connection connection = DB.getConnection();
+        //Connection connection = DB.getConnection();
         List<Shift> list = new ArrayList<Shift>();
 
         try {
@@ -115,7 +121,7 @@ public class JdbcScheduleRepo implements ScheduleRepo {
     @Override
     public boolean createShift(Date date, Username username) {
         String str = date.toString();
-        Connection connection = DB.getConnection();
+        //Connection connection = DB.getConnection();
 
         try {
             Statement statement = connection.createStatement();
@@ -134,7 +140,7 @@ public class JdbcScheduleRepo implements ScheduleRepo {
     @Override
     public boolean updateShift(Shift s) {
         String str = s.d.toString();
-        Connection connection = DB.getConnection();
+        //Connection connection = DB.getConnection();
 
         try {
             Statement statement = connection.createStatement();
@@ -153,7 +159,7 @@ public class JdbcScheduleRepo implements ScheduleRepo {
     @Override
     public boolean deleteShift(Shift s) {
         String str = s.d.toString();
-        Connection connection = DB.getConnection();
+        //Connection connection = DB.getConnection();
 
         try {
             Statement statement = connection.createStatement();

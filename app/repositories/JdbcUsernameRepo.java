@@ -12,11 +12,18 @@ import java.sql.Statement;
  * Created by thomasyeung on 7/6/15.
  */
 public class JdbcUsernameRepo implements UsernameRepo {
+
+    Connection connection;
+
+    public JdbcUsernameRepo(Connection connection) {
+        this.connection = connection;
+    }
+
     @Override
     public Username findOne(String name) {
 
         Username username = new Username();
-        Connection connection = DB.getConnection();
+        //Connection connection = DB.getConnection();
         String sql = "select * from username where name = \'" + name.toLowerCase() + "\' limit 1";
 
         try {
@@ -41,7 +48,7 @@ public class JdbcUsernameRepo implements UsernameRepo {
 
     @Override
     public boolean create(int id, String name) {
-        Connection connection = DB.getConnection();
+        //Connection connection = DB.getConnection();
 
         try {
             Statement statement = connection.createStatement();

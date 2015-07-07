@@ -18,17 +18,22 @@ import static play.db.DB.*;
  */
 public class DefaultSeed implements Seed {
 
-    UsernameRepo usernameRepository = new JdbcUsernameRepo();
+    Connection connection;
+    UsernameRepo usernameRepository;
 
     public void loadInitalData() {
 
+        connection = getConnection();
+        usernameRepository = new JdbcUsernameRepo(connection);
+
         Logger.info("loading");
 
-        Connection conn = getConnection();
+        //Connection conn = getConnection();
 
         try {
-            DatabaseMetaData dm = conn.getMetaData();
-            Statement st = conn.createStatement();
+            connection.setAutoCommit(false);
+            DatabaseMetaData dm = connection.getMetaData();
+            Statement st = connection.createStatement();
             ResultSet rs = dm.getTables(null, null, "username", null);
 
             if (!rs.next()) {
@@ -37,7 +42,7 @@ public class DefaultSeed implements Seed {
             }
 
             st.executeUpdate("create table if not exists schedule (d date primary key, userid int references username(id))");
-
+            connection.commit();
         } catch (Throwable e) {
             Logger.warn(e.getMessage());
         } finally {
@@ -51,14 +56,15 @@ public class DefaultSeed implements Seed {
                 "Jay", "Boris", "Eadon", "Franky", "Luis", "James"};
 
 
-        Connection connection = DB.getConnection();
+        //Connection connection = DB.getConnection();
         try {
             connection.setAutoCommit(false);
             Statement statement = connection.createStatement();
 
             Logger.info("seeding usernames");
             for (int i = 0; i < users.length; i++)
-                statement.executeUpdate("insert into username values(" + i + ", \'" + users[i].toLowerCase() + "\')");
+                usernameRepository.create(i, users[i]);
+                //statement.executeUpdate("insert into username values(" + i + ", \'" + users[i].toLowerCase() + "\')");
 
             connection.commit();
         } catch (Throwable e) {
