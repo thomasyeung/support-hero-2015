@@ -5,6 +5,9 @@ This uses Postgres version 9.4.4.0.
 
 This can be deployed to heroku
 
+
+Requirements:
+
 Features
 ● Display today’s Support Hero.
 ● Display a single user’s schedule showing the days they are assigned to Support
@@ -23,3 +26,102 @@ Starting Order
  ''Boris'', ''Franky'', ''Vicente'', ''Luis'', ''Eadon'', ''Boris'',
  ''Kevin'', ''Matte'', ''Jay'', ''James'', ''Kevin'', ''Sherry'',
  ''Sherry'', ''Jack'', ''Sherry'', ''Jack'']
+
+
+
+ Rough Overview:
+
+ backend overview
+
+
+ support hero api layer
+
+    1.	endpoints and services
+
+ repo layer
+
+    1.	persist objects to the database
+    2.	repositories can have different implementations
+    3.	default implementation uses jdbc
+
+
+
+ frontend overview
+
+ html with buttons
+
+
+
+
+ Database tables
+
+ Username
+ + id
+ + name
+
+ UserSchedule
+ + date
+ + Username
+
+
+
+ Objects
+
+ class Username
+ + id
+ + name
+
+ class Shift
+ + date
+ + user
+
+ class Undoable
+ + date
+ + user
+
+
+
+
+
+
+ support hero api
+
+ the rest api will have the following methods:
+
+ 1.	get schedule (start date, end date)
+ 2.	get schedule by name (name, start date, end date)
+ 3.	assign shift (date, name)
+ 4.	swap shifts (date, date 2)
+ 5.	unassign shift (date, name)
+ 6.	get undoables (date)
+ 7.	create undoable (date)
+ 8.	delete undoable (date)
+
+
+
+ repos
+
+ UndoableRepo
+
+ get
+ create
+ delete
+
+
+ UsernameRepo
+
+ findOne ( name )
+ //getUser ( id )
+ //createUser ( id, name )
+ //deleteUser ( id )
+ //updateUser ( id, name )
+
+
+ ScheduleRepo
+
+ getShift ( date )
+ getShifts ( start date, end date )
+ getShiftsByUser ( username, start date, end date )
+ createShift ( date, username )
+ //updateShift ( date, User )
+ deleteShift ( date )

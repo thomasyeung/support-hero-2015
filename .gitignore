@@ -7,3 +7,4 @@ target
 /.settings
 project/play-fork-run.sbt
 /RUNNING_PID
+.DS_Store
