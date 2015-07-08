@@ -473,3 +473,29 @@ function toDate(str) {
 
     return result;
 }
+
+function getTodaysSupportHero() {
+
+    var date = new Date()
+    var y = date.getFullYear();
+    var m = date.getMonth() + 1;
+    var d = date.getDate();
+
+    var url = "/shift?date=" + y + "-" + m + "-" + d;
+
+    var http = new XMLHttpRequest()
+    http.open("GET", url, true)
+
+    http.onreadystatechange = function() {
+        if (http.readyState == 4 && http.status == 200) {
+            //alert(http.responseText)
+            var obj = JSON.parse(http.responseText)
+            var e = document.getElementById('heading1')
+            if (obj.username && obj.username.name) {
+                e.innerHTML = "Today's Support Hero is " + obj.username.name.toUpperCase()
+            }
+        }
+    }
+
+    http.send()
+}

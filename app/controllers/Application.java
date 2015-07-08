@@ -1,5 +1,7 @@
 package controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import models.Shift;
 import models.Username;
 import play.*;
@@ -30,6 +32,27 @@ public class Application extends Controller {
     public Result index() {
 
         return ok(index.render("Your new application is ready."));
+    }
+
+    public Result getShift(String date) {
+        try {
+            connection.setAutoCommit(false);
+            java.util.Date parsed = dateFormat.parse(date);
+            java.sql.Date sqlDate = new java.sql.Date(parsed.getTime());
+
+            Shift s = scheduleRepo.getShift(sqlDate);
+
+            connection.commit();
+
+            ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+            String json = ow.writeValueAsString(s);
+
+            return ok(json);
+        } catch (Throwable e) {
+            Logger.warn(e.getMessage());
+        }
+
+        return ok();
     }
 
 

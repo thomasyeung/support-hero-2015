@@ -4,6 +4,7 @@
 
 # Home page
 GET     /                           controllers.Application.index()
+GET     /shift                      controllers.Application.getShift(date)
 POST    /shift                      controllers.Application.assignShiftByName()
 DELETE  /shift                      controllers.Application.unassignShift(date)
 GET     /schedule                   controllers.Application.getSchedule(startDate, endDate)
