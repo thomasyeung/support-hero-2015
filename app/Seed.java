@@ -4,4 +4,5 @@
 public interface Seed {
 
     public void loadInitalData();
+    public void clearData();
 }

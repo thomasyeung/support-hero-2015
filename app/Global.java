@@ -1,5 +1,7 @@
 
+import play.Application;
 import play.GlobalSettings;
+import play.db.DB;
 import play.libs.F;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -9,12 +11,15 @@ import play.mvc.Result;
  */
 public class Global extends GlobalSettings {
 
-    Seed seed = new DefaultSeed();
+    Seed seed;
 
     @Override
     public void onStart(play.Application application) {
         super.onStart(application);
 
+        seed = new DefaultSeed(DB.getConnection());
+
+        seed.clearData();
         seed.loadInitalData();
     }
 
@@ -24,4 +29,12 @@ public class Global extends GlobalSettings {
 
         return null;
     }
+
+    @Override
+    public void onStop(Application var1) {
+        super.onStop(var1);
+
+        //seed.clearData();
+    }
+
 }
