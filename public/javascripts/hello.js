@@ -106,13 +106,13 @@ function populateTable(table, schedule) {
     for (var i = 0; i < schedule.length; i++) {
         var shift = schedule[i];
         var user = shift['username'];
-
-        var r = document.createElement('tr')
+        //var r = document.createElement('tr')
 
         var d = getNumbers(shift['d'])//new Date(shift['d'])
         var txt = d[0] + "-" + d[1] + "-" + d[2]
+        var r = createTableRow(i, 0, txt)
 
-        r.id = txt
+        //r.id = txt
 
         table.appendChild(r)
 
