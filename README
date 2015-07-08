@@ -1,4 +1,25 @@
-This is your new Play application
-=================================
 
-This file will be packaged with your application, when using `activator dist`.
+
+
+This uses Postgres version 9.4.4.0.
+
+This can be deployed to heroku
+
+Features
+● Display today’s Support Hero.
+● Display a single user’s schedule showing the days they are assigned to Support
+Hero.
+● Display the full schedule for all users in the current month.
+● Users should be able to mark one of their days on duty as undoable
+○ The system should reschedule accordingly
+○ Should take into account weekends and California’s holidays.
+● Users should be able to swap duty with another user’s specific day
+
+Starting Order
+[''Sherry'', ''Boris'', ''Vicente'', ''Matte'', ''Jack'', ''Sherry'',
+ ''Matte'', ''Kevin'', ''Kevin'', ''Vicente'', ''Zoe'', ''Kevin'',
+ ''Matte'', ''Zoe'', ''Jay'', ''Boris'', ''Eadon'', ''Sherry'',
+ ''Franky'', ''Sherry'', ''Matte'', ''Franky'', ''Franky'', ''Kevin'',
+ ''Boris'', ''Franky'', ''Vicente'', ''Luis'', ''Eadon'', ''Boris'',
+ ''Kevin'', ''Matte'', ''Jay'', ''James'', ''Kevin'', ''Sherry'',
+ ''Sherry'', ''Jack'', ''Sherry'', ''Jack'']
