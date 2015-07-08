@@ -367,8 +367,10 @@ function getNextMonthSchedule() {
 
 function getUserSchedule() {
 
-    var start = toDate(document.getElementById("inputStartDate").value)
-    var end = toDate(document.getElementById("inputEndDate").value)
+    var start = document.getElementById("inputStartDate").value ?
+        toDate(document.getElementById("inputStartDate").value) : ""
+    var end = document.getElementById("inputEndDate").value ?
+        toDate(document.getElementById("inputEndDate").value) : ""
     var name = document.getElementById("inputName2").value
 
     var url = "/schedule/name?name="+name+"&startDate="+start+"&endDate="+end

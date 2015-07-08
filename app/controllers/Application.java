@@ -148,8 +148,8 @@ public class Application extends Controller {
 
         try {
             connection.setAutoCommit(false);
-            start = new java.sql.Date(dateFormat.parse(startDate).getTime());
-            end = new java.sql.Date(dateFormat.parse(endDate).getTime());
+            start = (startDate.equals("") ? null : new java.sql.Date(dateFormat.parse(startDate).getTime()));
+            end = (endDate.equals("") ? null : new java.sql.Date(dateFormat.parse(endDate).getTime()));
             username = usernameRepo.findOne(name);
 
             schedule = scheduleRepo.getShiftsByUser(username, start, end);
