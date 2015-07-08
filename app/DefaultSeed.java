@@ -42,6 +42,8 @@ public class DefaultSeed implements Seed {
             }
 
             st.executeUpdate("create table if not exists schedule (d date primary key, userid varchar(255) references username(id))");
+
+            st.executeUpdate("create table if not exists undoable (id varchar(255) primary key, d date, userid varchar(255) references username(id))");
             connection.commit();
         } catch (Throwable e) {
             Logger.warn(e.getMessage());

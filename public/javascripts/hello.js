@@ -49,9 +49,13 @@ function deleteAllNodes(myNode) {
 function unassignShift() {
     //alert("hello world");
     var name = document.getElementById("inputName").value;
+    var name = document.getElementById("inputName").value;
     var date = toDate(document.getElementById("inputDate").value);
-    
-    unassign(date, name)
+    var num = getNumbers(date)
+
+    if (isWorkday(num[0], num[1], num[2])) {
+        unassign(date, name)
+    }
 }
 
 function unassign(shiftDate, name) {
@@ -126,7 +130,7 @@ function isWeekend(year, month, d) {
 }
 
 function getHoliday(month, day) {
-    var holiday = {"January 1": "New Year's Day",
+    var holiday = {"1 1": "New Year's Day",
     "1 19": "Martin Luther King Jr's Birthday",
     "2 16": "President's Day",
     "3 31": "Cesar Chavez Day",
@@ -138,11 +142,12 @@ function getHoliday(month, day) {
     "11 27": "Day after Thanksgiving Day",
     "12 25": "Christmas Day"};
 
-    return holiday[month + " " + day]
+    var str = holiday[month + " " + day]
+    return str
 }
 
 function isWorkday(year, month, day) {
-    return !Weekend(year, month, day) && getHoliday(month, day) == null
+    return !isWeekend(year, month-1, day) && getHoliday(month, day) == undefined
 }
 
 function isBelowDate(ms, year, month, day) {
@@ -181,6 +186,8 @@ function appendAssignButton(tr, date) {
     }
     tr.appendChild(c)
     c.appendChild(button)
+
+    appendUndoableButton(tr, date, "")
 }
 
 function appendUnassignButton(tr, date, name) {
@@ -200,7 +207,7 @@ function appendSwapButton(tr, date) {
     button.className="btn-xs btn-primary"
     button.style="margin:2px;"
     button.onclick = function () {
-        var date2 = prompt(date + "\n\nPlease enter a date (e.g. 7/31/2015, 7/31, or 31)", "");
+        var date2 = prompt("Date 1 is " + date + "\n\nPlease enter date 2", "");
         if (date2) {
             swapShifts2(date, toDate(date2))
         }
@@ -215,6 +222,7 @@ function appendUserAndAction(tr, date, name) {
     c2.appendChild(document.createTextNode(name))
     tr.appendChild(c2)
 
+    appendUndoableButton(tr, date, name)
     appendSwapButton(tr, date)
     appendUnassignButton(tr, date, name)
 }
@@ -379,7 +387,13 @@ function getUserSchedule() {
 function swapShifts() {
     var date1 = toDate(document.getElementById("inputDate1").value);
     var date2 = toDate(document.getElementById("inputDate2").value);
-    swapShifts2(date1, date2)
+    var num1 = getNumbers(date1)
+    var num2 = getNumbers(date2)
+    var w1 = isWorkday(num1[0], num1[1], num1[2])
+    var w2 = isWorkday(num2[0], num2[1], num2[2])
+
+    if (w1 && w2)
+        swapShifts2(date1, date2)
 }
 
 function swapShifts2(date1, date2) {
@@ -470,11 +484,86 @@ function getTodaysSupportHero() {
             //alert(http.responseText)
             var obj = JSON.parse(http.responseText)
             var e = document.getElementById('heading1')
-            if (obj.username && obj.username.name) {
+            if (obj && obj.username && obj.username.name) {
                 e.innerHTML = "Today's Support Hero is " + obj.username.name.toUpperCase()
             }
         }
     }
 
     http.send()
+}
+
+/*function getNames(obj) {
+    var list = []
+
+    for (var i=0; i < obj.length; i++) {
+        var undoable = obj[i]
+        var user = undoable.username
+        list.push(user.name)
+    }
+
+    return list
+}*/
+
+function existsInList(list, str) {
+    if (!Array.prototype.indexOf) {
+       Array.prototype.indexOf = function(item) {
+          var i = this.length;
+          while (i--) {
+             if (this[i] === item) return i;
+          }
+       }
+       return -1;
+    }
+
+    return list.indexOf(str) >= 0
+}
+
+function createUndoable(date, name) {
+    var http = new XMLHttpRequest();
+    var url = "/undoable";
+    var params = "name="+name+"&date="+date;
+    http.open("POST", url, true);
+
+    //Send the proper header information along with the request
+    http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    http.setRequestHeader("Content-length", params.length);
+    http.setRequestHeader("Connection", "close");
+    http.send(params);
+}
+
+function deleteUndoable(date, name) {
+    //var date = toDate(date)
+    var http = new XMLHttpRequest();
+    var url = "/undoable?date="+date+"&name="+name;
+    http.open("DELETE", url, true);
+    http.send();
+}
+
+function appendUndoableButton(tr, date, name) {
+    var button = document.createElement('button')
+    button.innerHTML = 'undoable'
+    button.className="btn-xs btn-warning"
+    button.style="margin:2px;"
+    button.onclick = function () {
+
+        var url = "/undoable?date=" + date;
+        var http = new XMLHttpRequest()
+        http.open("GET", url, true)
+
+        http.onreadystatechange = function() {
+            if (http.readyState == 4 && http.status == 200) {
+                var obj = JSON.parse(http.responseText)
+                var name2 = prompt("Undoable: " + obj.toString() + "\n\nPlease enter a name", "");
+                if (existsInList(obj, name2)) {
+                    deleteUndoable(date, name2)
+                } else if (name != name2) {
+                    createUndoable(date, name2)
+                }
+            }
+        }
+
+        http.send()
+    }
+    tr.appendChild(button)
 }

@@ -3,6 +3,7 @@ package controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import models.Shift;
+import models.Undoable;
 import models.Username;
 import play.*;
 import play.data.Form;
@@ -26,6 +27,7 @@ public class Application extends Controller {
     Connection connection = DB.getConnection();
     UsernameRepo usernameRepo = new JdbcUsernameRepo(connection);
     ScheduleRepo scheduleRepo = new JdbcScheduleRepo(connection);
+    UndoableRepo undoableRepo = new JdbcUndoableRepo(connection);
 
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -61,7 +63,7 @@ public class Application extends Controller {
     public Result assignShiftByName() {
         //Map<String, String[]> values = request().body().asFormUrlEncoded();
         String date = Form.form().bindFromRequest().get("date");
-        String name = Form.form().bindFromRequest().get("name");
+        String name = Form.form().bindFromRequest().get("name").toLowerCase();
 
         try {
             connection.setAutoCommit(false);
@@ -78,8 +80,12 @@ public class Application extends Controller {
                 u = usernameRepo.findOne(name);
             }
 
-            if (!scheduleRepo.createShift(sqlDate, u))
+            List<String> ul = undoableRepo.getNames(sqlDate);
+
+            if (ul.contains(name) || !scheduleRepo.createShift(sqlDate, u)) {
                 Logger.warn("Can't assign shift on " + date + " to " + name);
+                return badRequest();
+            }
             connection.commit();
 
         } catch (Throwable e) {
@@ -168,23 +174,91 @@ public class Application extends Controller {
             Shift s1 = scheduleRepo.getShift(d1);
             Shift s2 = scheduleRepo.getShift(d2);
 
-            Username u = s1.username;
-            s1.username = s2.username;
-            s2.username = u;
+            List<String> ul1 = undoableRepo.getNames(d1);
+            List<String> ul2 = undoableRepo.getNames(d2);
 
-            scheduleRepo.updateShift(s1);
-            scheduleRepo.updateShift(s2);
+            if (!ul1.contains(s2.username.name) && !ul2.contains(s1.username.name)) {
+                Username u = s1.username;
+                s1.username = s2.username;
+                s2.username = u;
 
+                scheduleRepo.updateShift(s1);
+                scheduleRepo.updateShift(s2);
+
+                connection.commit();
+
+                String json = "{\"name1\":\"" + s1.username.name + "\",\"name2\":\"" + s2.username.name + "\"}";
+
+                return ok(json);
+            }
+        } catch (Throwable e) {
+            Logger.warn(e.getMessage());
+        }
+
+        return badRequest();
+    }
+
+    public Result getUndoables(String date) {
+        java.sql.Date d;
+        List<String> ul;
+
+        try {
+            connection.setAutoCommit(false);
+            d = new java.sql.Date(dateFormat.parse(date).getTime());
+
+            ul = undoableRepo.getNames(d);
             connection.commit();
 
-            String json = "{\"name1\":\"" + s1.username.name + "\",\"name2\":\"" + s2.username.name + "\"}";
-
-            return ok(json);
+            return ok(Json.toJson(ul));
 
         } catch (Throwable e) {
             Logger.warn(e.getMessage());
         }
 
         return badRequest();
+    }
+
+    public Result createUndoable() {
+        String date = Form.form().bindFromRequest().get("date");
+        String name = Form.form().bindFromRequest().get("name");
+
+        try {
+            connection.setAutoCommit(false);
+            java.util.Date parsed = dateFormat.parse(date);
+            java.sql.Date sqlDate = new java.sql.Date(parsed.getTime());
+
+            Username u = usernameRepo.findOne(name);
+
+            if (u != null && !undoableRepo.create(sqlDate, u))
+                Logger.warn("Can't mark undoable: " + date + ", " + name);
+            connection.commit();
+
+        } catch (Throwable e) {
+            Logger.warn(e.getMessage());
+        }
+
+        return redirect(routes.Application.index());
+    }
+
+    public Result deleteUndoable(String date, String name) {
+
+        try {
+            connection.setAutoCommit(false);
+            java.util.Date parsed = dateFormat.parse(date);
+            java.sql.Date sqlDate = new java.sql.Date(parsed.getTime());
+
+            Username u = usernameRepo.findOne(name);
+
+            boolean deleted = undoableRepo.delete(sqlDate, u);
+
+            if (!deleted)
+                Logger.warn("Can't delete shift on" + date);
+            connection.commit();
+
+        } catch (Throwable e) {
+            Logger.warn(e.getMessage());
+        }
+
+        return redirect(routes.Application.index());
     }
 }

@@ -11,6 +11,10 @@ GET     /schedule                   controllers.Application.getSchedule(startDat
 GET     /schedule/name              controllers.Application.getScheduleByName(name, startDate, endDate)
 PUT     /shift/swap                 controllers.Application.swapShifts(date1, date2)
 
+GET     /undoable                   controllers.Application.getUndoables(date)
+POST    /undoable                   controllers.Application.createUndoable()
+DELETE  /undoable                   controllers.Application.deleteUndoable(date, name)
+
 
 
 
