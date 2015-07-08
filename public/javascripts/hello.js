@@ -563,9 +563,10 @@ function appendUndoableButton(tr, date, name) {
             if (http.readyState == 4 && http.status == 200) {
                 var obj = JSON.parse(http.responseText)
                 var name2 = prompt("Undoable: " + obj.toString() + "\n\nPlease enter a name", "");
-                if (existsInList(obj, name2)) {
+
+                if (name2 && existsInList(obj, name2)) {
                     deleteUndoable(date, name2)
-                } else if (name != name2) {
+                } else if (name2 && name != name2) {
                     createUndoable(date, name2)
                 }
             }
