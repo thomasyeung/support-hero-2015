@@ -7,36 +7,10 @@ function assignShift() {
     //alert("hello world");
     var name = document.getElementById("inputName0").value;
     var date = toDate(document.getElementById("inputDate0").value);
-    /*var http = new XMLHttpRequest();
-    var url = "/shift";
-    http.open("POST", url, true);
+    var num = getNumbers(date)
 
-    http.send("date="+date+"&name="+name);*/
-
-    assign(date, name)
-/*
-    var http = new XMLHttpRequest();
-    var url = "/shift";
-    var params = "name="+name+"&date="+date;
-    http.open("POST", url, true);
-
-    //Send the proper header information along with the request
-    http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    http.setRequestHeader("Content-length", params.length);
-    http.setRequestHeader("Connection", "close");
-
-    http.onreadystatechange = function() {//Call a function when the state changes.
-        if(http.readyState == 4 && http.status == 200) {
-            var tr = document.getElementById(date)
-            if (tr) {
-                var c2 = document.createElement('td')
-                c2.innerHTML = name.toLowerCase()
-                tr.appendChild(c2)
-            }
-        }
-    }
-
-    http.send(params);*/
+    if (isWorkday(num[0], num[1], num[2]))
+        assign(date, name)
 }
 
 function assign(shiftDate, name) {
@@ -76,6 +50,7 @@ function unassignShift() {
     //alert("hello world");
     var name = document.getElementById("inputName").value;
     var date = toDate(document.getElementById("inputDate").value);
+    
     unassign(date, name)
 }
 
@@ -164,6 +139,10 @@ function getHoliday(month, day) {
     "12 25": "Christmas Day"};
 
     return holiday[month + " " + day]
+}
+
+function isWorkday(year, month, day) {
+    return !Weekend(year, month, day) && getHoliday(month, day) == null
 }
 
 function isBelowDate(ms, year, month, day) {
