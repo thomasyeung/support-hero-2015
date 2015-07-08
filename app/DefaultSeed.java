@@ -64,9 +64,25 @@ public class DefaultSeed implements Seed {
         try {
             connection.setAutoCommit(false);
             Statement st = connection.createStatement();
-            st.executeUpdate("drop table undoable");
-            st.executeUpdate("drop table schedule");
-            st.executeUpdate("drop table username");
+            try {
+                st.executeUpdate("drop table undoable");
+                Logger.info("dropped table undoable");
+            } catch (Throwable e) {
+            }
+
+            try {
+                st.executeUpdate("drop table schedule");
+                Logger.info("dropped table schedule");
+            } catch (Throwable e) {
+
+            }
+
+            try {
+                st.executeUpdate("drop table username");
+                Logger.info("dropped table username");
+            } catch (Throwable e) {
+
+            }
             connection.commit();
         } catch (Throwable e) {
             Logger.warn(e.getMessage());
@@ -123,7 +139,7 @@ public class DefaultSeed implements Seed {
     private String getDateString(Date date) {
         Calendar cal = new GregorianCalendar();
         cal.setTime(date);
-        return cal.get(Calendar.MONTH) + " " + cal.get(Calendar.DAY_OF_MONTH);
+        return (cal.get(Calendar.MONTH)+1) + " " + cal.get(Calendar.DAY_OF_MONTH);
     }
 
     private Set<String> holidays;
