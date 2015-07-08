@@ -252,7 +252,10 @@ function appendEmptyColumn(tr) {
 function appendWeekend(tr) {
     var c2 = document.createElement('td')
     c2.className = "col-xs-4 text-left"
-    c2.appendChild(document.createTextNode("weekend"))
+    var span = document.createElement("span")
+    span.className = "text-success"
+    span.appendChild(document.createTextNode("weekend"))
+    c2.appendChild(span)
     tr.appendChild(c2)
 
     appendEmptyColumn(tr)
@@ -289,7 +292,10 @@ function populateTable2(table, schedule, startDay, endDay, month, year) {
         } else if (getHoliday(month+1, d) != undefined) {
             var c2 = document.createElement('td')
             c2.className = "col-xs-4 text-left"
-            c2.appendChild(document.createTextNode(getHoliday(month+1, d)))
+            var span = document.createElement('span')
+            span.className="text-danger"
+            span.appendChild(document.createTextNode(getHoliday(month+1, d)))
+            c2.appendChild(span)
             r.appendChild(c2)
             appendEmptyColumn(r)
         } else if (isWeekend(year, month, d)) {
